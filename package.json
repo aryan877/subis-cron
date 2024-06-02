@@ -1,0 +1,19 @@
+{
+  "name": "cron",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {},
+  "dependencies": {
+    "@types/node": "^20.13.0",
+    "dotenv": "^16.4.5",
+    "ethers": "5.7.0",
+    "node-cron": "^3.0.3",
+    "typescript": "^5.4.5",
+    "zksync-ethers": "5.0.0",
+    "zksync-web3": "^0.14.3"
+  },
+  "devDependencies": {
+    "@types/node-cron": "^3.0.11"
+  }
+}
