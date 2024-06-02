@@ -91,7 +91,7 @@ const logFilePath = path.resolve(__dirname, "cron.log");
 
 function startCronJob() {
   cronJob = cron.schedule(
-    "*/5 * * * * *", // Run every 5 seconds
+    "2 0 * * *", // Runs every midnight at 12:00:02 AM UTC
     async () => {
       try {
         await chargeExpiredSubscriptions(logFilePath);
