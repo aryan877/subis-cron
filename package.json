@@ -8,6 +8,7 @@
     "@types/node": "^20.13.0",
     "dotenv": "^16.4.5",
     "ethers": "5.7.0",
+    "express": "^4.19.2",
     "node-cron": "^3.0.3",
     "typescript": "^5.4.5",
     "zksync-ethers": "5.0.0",

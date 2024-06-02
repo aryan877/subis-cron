@@ -4,9 +4,15 @@ const fs = require("fs");
 const path = require("path");
 const cron = require("node-cron");
 const dotenv = require("dotenv");
+const express = require("express");
 const { chains } = require("./chains");
 
 dotenv.config();
+
+const app = express();
+const port = process.env.PORT || 3000;
+
+let cronJob;
 
 async function chargeExpiredSubscriptions(logFilePath) {
   const provider = new Provider(chains.inMemoryLocalNode.rpcUrl);
@@ -81,25 +87,54 @@ async function chargeExpiredSubscriptions(logFilePath) {
   fs.appendFileSync(logFilePath, logMessage);
 }
 
-// Get the absolute path to the log file
 const logFilePath = path.resolve(__dirname, "cron.log");
 
-// Commented out: Schedule the cron job to run every day at 12:00:02 AM UTC
-cron.schedule(
-  "2 0 * * *",
-  async () => {
-    try {
-      await chargeExpiredSubscriptions(logFilePath);
-    } catch (error) {
-      console.error("Error charging expired subscriptions:", error);
-      fs.appendFileSync(
-        logFilePath,
-        `[${new Date().toISOString()}] Error: ${error.message}\n\n`
-      );
+function startCronJob() {
+  cronJob = cron.schedule(
+    "*/5 * * * * *", // Run every 5 seconds
+    async () => {
+      try {
+        await chargeExpiredSubscriptions(logFilePath);
+      } catch (error) {
+        console.error("Error charging expired subscriptions:", error);
+        fs.appendFileSync(
+          logFilePath,
+          `[${new Date().toISOString()}] Error: ${error.message}\n\n`
+        );
+      }
+    },
+    {
+      scheduled: true,
+      timezone: "UTC",
     }
-  },
-  {
-    scheduled: true,
-    timezone: "UTC",
+  );
+  console.log("Cron job started");
+}
+
+function stopCronJob() {
+  if (cronJob) {
+    cronJob.stop();
+    console.log("Cron job stopped");
   }
-);
+}
+
+// Health check endpoint
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "OK" });
+});
+
+// Start cron job endpoint
+app.post("/start", (req, res) => {
+  startCronJob();
+  res.status(200).json({ message: "Cron job started" });
+});
+
+// Stop cron job endpoint
+app.post("/stop", (req, res) => {
+  stopCronJob();
+  res.status(200).json({ message: "Cron job stopped" });
+});
+
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});
