@@ -16,7 +16,7 @@ let cronJob;
 
 async function chargeExpiredSubscriptions(logFilePath) {
   const provider = new Provider(chains.inMemoryLocalNode.rpcUrl);
-  const wallet = new Wallet(process.env.OWNER_WALLET_PRIVATE_KEY, provider);
+  const wallet = new Wallet(process.env.WALLET_PRIVATE_KEY, provider);
 
   const subscriptionManagerAddress = process.env.SUBSCRIPTION_MANAGER_ADDRESS;
   const subscriptionManagerArtifact = require("./artifacts-zk/contracts/SubscriptionManager.sol/SubscriptionManager.json");
