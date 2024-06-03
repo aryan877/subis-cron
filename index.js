@@ -15,7 +15,7 @@ const port = process.env.PORT || 3000;
 let cronJob;
 
 async function chargeExpiredSubscriptions(logFilePath) {
-  const provider = new Provider(chains.zkSyncSepoliaTestnet.rpcUrl);
+  const provider = new Provider(chains.inMemoryLocalNode.rpcUrl);
   const wallet = new Wallet(process.env.WALLET_PRIVATE_KEY, provider);
 
   const subscriptionManagerAddress = process.env.SUBSCRIPTION_MANAGER_ADDRESS;
